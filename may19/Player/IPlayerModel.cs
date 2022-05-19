@@ -1,6 +1,6 @@
 using System;
 
-namespace PlayerProgram
+namespace Program.Abstractions.Interfaces
 {
 	public interface IPlayerModel
 	{

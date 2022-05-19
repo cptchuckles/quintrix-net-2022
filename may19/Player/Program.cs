@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Program.Abstractions.Models;
+using Program.Exceptions;
 
-namespace PlayerProgram
+namespace Program
 {
-	public class NoInputException : Exception
-	{
-		public NoInputException(string message) {}
-	}
-
 	public class Program
 	{
 		private static List<PlayerModel> players = new List<PlayerModel>();

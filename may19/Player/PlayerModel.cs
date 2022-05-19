@@ -1,7 +1,8 @@
 using System;
 using System.Text.RegularExpressions;
+using Program.Abstractions.Interfaces;
 
-namespace PlayerProgram
+namespace Program.Abstractions.Models
 {
 	public class PlayerModel : IPlayerModel
 	{

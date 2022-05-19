@@ -30,16 +30,15 @@ namespace PlayerProgram
 			players.Add(new PlayerModel("Leeroy Chickenseller", "leeroy@lol.wtf"));
 			players[0].Task = BuyGroceries;
 			players[1].Task = SellChickens;
-			Console.WriteLine($"There are {players.Count} players already waiting.");
 
 			Console.Clear();
-			Console.WriteLine($"There are now {players.Count} players.");
 
 			while(true)
 			{
 				try
 				{
 START:
+					Console.WriteLine($"There are now {players.Count} players.");
 					{
 						uint i=0;
 						foreach (var player in players)
@@ -52,9 +51,9 @@ START:
 					uint choice;
 					GetInput<uint>("Enter selection: ", out choice);
 
-					if ((choice-1) >= players.Count)
+					if (choice == players.Count+1)
 					{
-						SetPlayerInformation(null);
+						players.Add(CreatePlayerInteractively());
 						continue;
 					}
 
@@ -75,7 +74,6 @@ START:
 						switch(action)
 						{
 							case 1:
-								Console.Clear();
 								selectedPlayer.PrintInformation();
 								Console.WriteLine("Press any key to continue");
 								Console.Read();
@@ -84,7 +82,6 @@ START:
 								SetPlayerInformation(selectedPlayer);
 								break;
 							case 3:
-								Console.Clear();
 								selectedPlayer.DoTask();
 								Console.WriteLine("Press any key to continue");
 								Console.ReadLine();
@@ -104,28 +101,26 @@ START:
 				{
 					Console.Clear();
 					Console.WriteLine($"Error: {e.Message}");
+					Console.Read();
+					Console.Clear();
 				}
 			}
 		} // public static void Main()
 
-		private static void SetPlayerInformation(PlayerModel? who)
+		private static PlayerModel CreatePlayerInteractively()
 		{
 			string playerName;
 			GetInput<string>("Enter name: ", out playerName);
 			string emailAddress;
 			GetInput<string>("Enter email: ", out emailAddress);
+			return new PlayerModel(playerName, emailAddress);
+		}
 
-			if (who == null)
-			{
-				players.Add(new PlayerModel(playerName, emailAddress));
-				Console.WriteLine($"Created player {playerName}");
-			}
-			else
-			{
-				who.Name = playerName;
-				who.Email = emailAddress;
-				Console.WriteLine($"Updated player {playerName}");
-			}
+		private static void SetPlayerInformation(PlayerModel who)
+		{
+			var newPlayer = CreatePlayerInteractively();
+			who.Name = newPlayer.Name;
+			who.Email = newPlayer.Email;
 		}
 		
 		private static void BuyGroceries(PlayerModel who)

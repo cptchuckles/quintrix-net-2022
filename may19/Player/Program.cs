@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Program.Abstractions.Models;
+using static Program.Extensions.PlayerModelExtension;
 using Program.Exceptions;
 
 namespace Program
@@ -76,7 +77,7 @@ START:
 								Console.Read();
 								break;
 							case 2:
-								SetPlayerInformation(selectedPlayer);
+								selectedPlayer.SetPlayerInformation(CreatePlayerInteractively());
 								break;
 							case 3:
 								selectedPlayer.DoTask();
@@ -111,13 +112,6 @@ START:
 			string emailAddress;
 			GetInput<string>("Enter email: ", out emailAddress);
 			return new PlayerModel(playerName, emailAddress);
-		}
-
-		private static void SetPlayerInformation(PlayerModel who)
-		{
-			var newPlayer = CreatePlayerInteractively();
-			who.Name = newPlayer.Name;
-			who.Email = newPlayer.Email;
 		}
 		
 		private static void BuyGroceries(PlayerModel who)

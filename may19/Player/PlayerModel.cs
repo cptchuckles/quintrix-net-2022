@@ -15,22 +15,14 @@ namespace Program.Abstractions.Models
 		public Guid Id => _id;
 		
 		public delegate void TaskToDo(PlayerModel whose);
-		private TaskToDo? _task;
-		public TaskToDo? Task { set => _task = value; }
+		private TaskToDo _task;
+		public TaskToDo Task { get => _task; set => _task = value; }
 
 		private string _name;
-		public string Name
-		{
-			get => _name;
-			set => _name = value;
-		}
+		public string Name { get => _name; set => _name = value; }
 
 		private string _email;
-		public string Email
-		{
-			get => _email;
-			set => _email = ValidateEmail(value);
-		}
+		public string Email { get => _email; set => _email = ValidateEmail(value); }
 
 		public PlayerModel(string name, string email)
 		{
@@ -54,11 +46,6 @@ namespace Program.Abstractions.Models
 				return;
 			}
 			_task(this);
-		}
-		
-		public void PrintInformation()
-		{
-			Console.WriteLine($"Player Information:\n\tId: {Id}\n\tName: {Name}\n\tEmail: {Email}\n\tTask: {_task}");
 		}
 	}
 }

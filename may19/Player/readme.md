@@ -6,5 +6,6 @@ Users can interactively add players, display existing player information, and in
 `PlayerModel` is now an abstract class, of which there are two implementations:
  - `Player`, which can take an arbitrary email address (pending validation)
    - This type can be edited by the user at any time
+   - This type is serializable to JSON and can be loaded by the program.  Loading a Player object from JSON who has the same Id as a Player in memory will overwrite the Name and Email properties of the runtime object.
  - `Robot`, which derives its email address from combining its name with its GUID
    - This type is immutable and cannot be edited by the user

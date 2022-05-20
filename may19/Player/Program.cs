@@ -1,15 +1,17 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Program.Abstractions.Models;
 using Program.Implementations;
-using static Program.Extensions.PlayerModelExtension;
+using Program.Serialization;
 using Program.Exceptions;
+using static Program.Extensions.PlayerModelExtension;
 
 namespace Program
 {
 	public class Program
 	{
-		private static List<PlayerModel> players = new List<PlayerModel>();
+		private static List<PlayerModel> players = new();
 
 		private static void GetInput<T>(string prompt, out T output)
 		{
@@ -37,12 +39,15 @@ namespace Program
 				try
 				{
 START:
+					Console.Clear();
 					Console.WriteLine($"There are now {players.Count} players.");
 					{
 						uint i=0;
 						foreach (var player in players)
 							Console.WriteLine($"{++i}. {player.Name}");
 						Console.WriteLine($"{++i}. <Add New Player>");
+						Console.WriteLine($"{++i}. <Save Players>");
+						Console.WriteLine($"{++i}. <Load Players>");
 					}
 					PlayerModel? selectedPlayer;
 
@@ -52,6 +57,33 @@ START:
 					if (choice == players.Count+1)
 					{
 						players.Add(CreatePlayerInteractively());
+						continue;
+					}
+					else if (choice == players.Count+2)
+					{
+						var noBots = from item in players
+						             where item is Player
+						             select (Player)item;
+
+						PlayerSerializer.WriteList(new List<Player>(noBots), "Players.json");
+						continue;
+					}
+					else if (choice == players.Count+3)
+					{
+						HashSet<Guid> guids = new(from player in players select player.Id);
+						foreach (Player player in PlayerSerializer.ReadList("Players.json"))
+						{
+							if (guids.Contains(player.Id))
+							{
+								Player overwritePlayer = (Player)players.Find((p) => p.Id == player.Id);
+								overwritePlayer.Name = player.Name;
+								overwritePlayer.Email = player.Email;
+							}
+							else
+							{
+								players.Add(player);
+							}
+						}
 						continue;
 					}
 
@@ -102,7 +134,7 @@ START:
 				catch(Exception e)
 				{
 					Console.Clear();
-					Console.WriteLine($"Error: {e.Message}");
+					Console.WriteLine($"Error: {e}");
 					Console.Read();
 					Console.Clear();
 				}

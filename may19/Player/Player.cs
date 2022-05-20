@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using System.Text.Json.Serialization;
 using Program.Abstractions.Models;
 
 namespace Program.Implementations
@@ -15,6 +16,14 @@ namespace Program.Implementations
 		{
 			Name = name;
 			Email = email;
+		}
+
+		[JsonConstructor]
+		public Player(string name, string email, Guid id)
+		{
+			Name = name;
+			Email = email;
+			_id = id;
 		}
 
 		private string _name;

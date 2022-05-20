@@ -5,7 +5,7 @@ namespace Program.Abstractions.Models
 {
 	public abstract class PlayerModel : IPlayerModel
 	{
-		private Guid _id = Guid.NewGuid();
+		protected Guid _id = Guid.NewGuid();
 		public Guid Id => _id;
 		
 		public delegate void TaskToDo(PlayerModel whose);

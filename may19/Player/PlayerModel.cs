@@ -1,16 +1,10 @@
 using System;
-using System.Text.RegularExpressions;
 using Program.Abstractions.Interfaces;
 
 namespace Program.Abstractions.Models
 {
-	public class PlayerModel : IPlayerModel
+	public abstract class PlayerModel : IPlayerModel
 	{
-		private static Regex _validEmailPattern = new Regex(
-				@"^[a-zA-Z]\w*@(\w+\.)+\w+$",
-				RegexOptions.Compiled
-				);
-
 		private Guid _id = Guid.NewGuid();
 		public Guid Id => _id;
 		
@@ -18,25 +12,9 @@ namespace Program.Abstractions.Models
 		private TaskToDo _task;
 		public TaskToDo Task { get => _task; set => _task = value; }
 
-		private string _name;
-		public string Name { get => _name; set => _name = value; }
+		public abstract string Name { get; set; }
 
-		private string _email;
-		public string Email { get => _email; set => _email = ValidateEmail(value); }
-
-		public PlayerModel(string name, string email)
-		{
-			Name = name;
-			Email = email;
-		}
-
-		private static string ValidateEmail(string input)
-		{
-			if (! _validEmailPattern.IsMatch(input))
-				throw new Exception("Invalid email given");
-
-			return input;
-		}
+		public abstract string Email { get; set; }
 
 		public void DoTask()
 		{

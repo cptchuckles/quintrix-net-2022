@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Program.Abstractions.Models;
+using Program.Implementations;
 using static Program.Extensions.PlayerModelExtension;
 using Program.Exceptions;
 
@@ -24,8 +25,8 @@ namespace Program
 		public static void Main(string[] args)
 		{
 			Console.Clear();
-			players.Add(new PlayerModel("Jim Grocerybuyer", "jim@groceries.com"));
-			players.Add(new PlayerModel("Leeroy Chickenseller", "leeroy@lol.wtf"));
+			players.Add(new Robot("Jim Grocerybuyer"));
+			players.Add(new Robot("Leeroy Chickenseller"));
 			players[0].Task = BuyGroceries;
 			players[1].Task = SellChickens;
 
@@ -111,7 +112,7 @@ START:
 			GetInput<string>("Enter name: ", out playerName);
 			string emailAddress;
 			GetInput<string>("Enter email: ", out emailAddress);
-			return new PlayerModel(playerName, emailAddress);
+			return new Player(playerName, emailAddress);
 		}
 		
 		private static void BuyGroceries(PlayerModel who)

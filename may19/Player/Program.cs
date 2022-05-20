@@ -46,7 +46,6 @@ START:
 					}
 					PlayerModel? selectedPlayer;
 
-
 					uint choice;
 					GetInput<uint>("Enter selection: ", out choice);
 
@@ -87,9 +86,11 @@ START:
 								Console.WriteLine("Press any key to continue");
 								Console.ReadLine();
 								break;
-							default:
+							case 4:
 								Console.Clear();
 								goto START;
+							default:
+								throw new IndexOutOfRangeException();
 						}
 					}
 				}

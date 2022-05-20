@@ -13,9 +13,17 @@ namespace Program.Implementations
 		}
 
 		private string _name;
-		public override string Name { get => _name; set {} }
+		public override string Name
+		{
+			get => _name;
+			set { throw new Exception("Cannot modify Robot.Name"); }
+		}
 
 		private string _email;
-		public override string Email { get => _email; set {} }
+		public override string Email
+		{
+			get => _email;
+			set { throw new Exception("Cannot modify Robot.Email"); }
+		}
 	}
 }

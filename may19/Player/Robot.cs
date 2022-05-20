@@ -3,7 +3,7 @@ using Program.Abstractions.Models;
 
 namespace Program.Implementations
 {
-	public class Robot : PlayerModel
+	public sealed class Robot : PlayerModel
 	{
 		public Robot(string name)
 		{

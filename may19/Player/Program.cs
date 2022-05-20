@@ -78,6 +78,8 @@ START:
 								Console.Read();
 								break;
 							case 2:
+								if (selectedPlayer is Robot)
+									throw new Exception($"{selectedPlayer.Name} is a robot and cannot be changed.");
 								selectedPlayer.SetPlayerInformation(CreatePlayerInteractively());
 								break;
 							case 3:
@@ -106,7 +108,7 @@ START:
 			}
 		} // public static void Main()
 
-		private static PlayerModel CreatePlayerInteractively()
+		private static Player CreatePlayerInteractively()
 		{
 			string playerName;
 			GetInput<string>("Enter name: ", out playerName);

@@ -16,7 +16,6 @@ namespace Program
 
 		public static void Main(string[] args)
 		{
-			Console.Clear();
 			players.Add(new Robot("Jim Grocerybuyer"));
 			players.Add(new Robot("Leeroy Chickenseller"));
 			players[0].Task = BuyGroceries;
@@ -25,30 +24,30 @@ namespace Program
 			while(true)
 			{
 				Console.Clear();
-				Console.WriteLine($"There are now {players.Count} players.");
 
 				DisplayMainMenu();
 
-				PlayerModel selectedPlayer;
-
 				try
 				{
-					char choice;
-					GetInput<char>("Enter selection: ", out choice);
+					Console.Write("Enter selection: ");
+					string choice = Console.ReadLine();
 
 					switch (choice)
 					{
-					case 'n':
+					case "n":
 						players.Add(CreatePlayerInteractively());
 						break;
-					case 'w':
+					case "w":
 						WritePlayerListToFile("Players.json");
 						break;
-					case 'r':
+					case "r":
 						LoadPlayerListFromFile("Players.json");
 						break;
+					case "":
+					case " ":
+						throw new NoInputException("No Input given");
 					default:
-						selectedPlayer = players[(int)(choice - '0') - 1];
+						var selectedPlayer = players[Int32.Parse(choice) - 1];
 						while(PlayerOptionsSubmenu(selectedPlayer));
 						break;
 					}
@@ -67,19 +66,9 @@ namespace Program
 			}
 		} // public static void Main()
 
-		private static void GetInput<T>(string prompt, out T output)
-		{
-			Console.Write(prompt);
-
-			string? input = Console.ReadLine();
-			if (input == null || input.Length == 0)
-				throw new NoInputException("No input given by user");
-
-			output = (T)Convert.ChangeType(input, typeof(T));
-		}
-
 		private static void DisplayMainMenu()
 		{
+			Console.WriteLine($"There are now {players.Count} players.");
 			Console.WriteLine("----------------------");
 			uint i=0;
 			foreach (var player in players)
@@ -136,8 +125,8 @@ namespace Program
 			Console.WriteLine("4. Return to player list");
 			Console.WriteLine("----------------------");
 
-			uint action;
-			GetInput<uint>("Select an action (number): ", out action);
+			Console.Write("Select an action (number): ");
+			int action = Int32.Parse(Console.ReadLine());
 
 			switch(action)
 			{
@@ -167,10 +156,14 @@ namespace Program
 
 		private static Player CreatePlayerInteractively()
 		{
-			string playerName;
-			GetInput<string>("Enter name: ", out playerName);
-			string emailAddress;
-			GetInput<string>("Enter email: ", out emailAddress);
+			Console.Write("Enter name: ");
+			string playerName = Console.ReadLine();
+			if (playerName == "") throw new Exception("No name entered");
+
+			Console.Write("Enter email: ");
+			string emailAddress = Console.ReadLine();
+			if (emailAddress == "") throw new Exception("No email entered");
+
 			return new Player(playerName, emailAddress);
 		}
 		

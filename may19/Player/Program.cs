@@ -29,7 +29,7 @@ namespace Program
 
 				DisplayMainMenu();
 
-				PlayerModel? selectedPlayer;
+				PlayerModel selectedPlayer;
 
 				try
 				{
@@ -85,9 +85,9 @@ namespace Program
 			foreach (var player in players)
 				Console.WriteLine($"{++i}. {player.Name}");
 			Console.WriteLine("----------------------");
-			Console.WriteLine("<n>. Add New Player");
-			Console.WriteLine("<w>. Save Player List");
-			Console.WriteLine("<r>. Load Player List");
+			Console.WriteLine("<n>. New Player");
+			Console.WriteLine("<w>. Write Player List to disk");
+			Console.WriteLine("<r>. Read Player List from disk");
 			Console.WriteLine("< >. Quit");
 			Console.WriteLine("----------------------");
 		}

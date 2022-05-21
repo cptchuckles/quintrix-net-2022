@@ -14,17 +14,6 @@ namespace Program
 	{
 		private static List<PlayerModel> players = new();
 
-		private static void GetInput<T>(string prompt, out T output)
-		{
-			Console.Write(prompt);
-
-			string? input = Console.ReadLine();
-			if (input == null || input.Length == 0)
-				throw new NoInputException("No input given by user");
-
-			output = (T)Convert.ChangeType(input, typeof(T));
-		}
-
 		public static void Main(string[] args)
 		{
 			Console.Clear();
@@ -33,103 +22,35 @@ namespace Program
 			players[0].Task = BuyGroceries;
 			players[1].Task = SellChickens;
 
-			Console.Clear();
-
 			while(true)
 			{
+				Console.Clear();
+				Console.WriteLine($"There are now {players.Count} players.");
+
+				DisplayMainMenu();
+
+				PlayerModel? selectedPlayer;
+
 				try
 				{
-START:
-					Console.Clear();
-					Console.WriteLine($"There are now {players.Count} players.");
-					{
-						uint i=0;
-						foreach (var player in players)
-							Console.WriteLine($"{++i}. {player.Name}");
-						Console.WriteLine($"{++i}. <Add New Player>");
-						Console.WriteLine($"{++i}. <Save Players>");
-						Console.WriteLine($"{++i}. <Load Players>");
-					}
-					PlayerModel? selectedPlayer;
+					char choice;
+					GetInput<char>("Enter selection: ", out choice);
 
-					uint choice;
-					GetInput<uint>("Enter selection: ", out choice);
-
-					if (choice == players.Count+1)
+					switch (choice)
 					{
+					case 'n':
 						players.Add(CreatePlayerInteractively());
-						continue;
-					}
-					else if (choice == players.Count+2)
-					{
-						var noBots = players
-							.Where(p => p is Player)
-							.Select(p => (Player)p)
-							.ToList();
-
-						PlayerSerializer.WriteList(noBots, "Players.json");
-						continue;
-					}
-					else if (choice == players.Count+3)
-					{
-						Hashtable playerById = new(
-							players
-							.Where(p => p is Player)
-							.ToDictionary(p => p.Id, p => (Player)p)
-						);
-						foreach (Player p in PlayerSerializer.ReadList("Players.json"))
-						{
-							if (playerById.Contains(p.Id))
-							{
-								Player overwritePlayer = (Player)playerById[p.Id];
-								overwritePlayer.Name = p.Name;
-								overwritePlayer.Email = p.Email;
-							}
-							else
-							{
-								players.Add(p);
-							}
-						}
-						continue;
-					}
-
-					selectedPlayer = players[(int)choice - 1];
-
-					while(true)
-					{
-						Console.Clear();
-						Console.WriteLine($"{selectedPlayer.Name} selected.");
-						Console.WriteLine("1. Display information");
-						Console.WriteLine("2. Change name and email");
-						Console.WriteLine("3. Perform task");
-						Console.WriteLine("4. Return to player list");
-
-						uint action;
-						GetInput<uint>("Select an action (number): ", out action);
-
-						switch(action)
-						{
-							case 1:
-								selectedPlayer.PrintInformation();
-								Console.WriteLine("Press any key to continue");
-								Console.Read();
-								break;
-							case 2:
-								if (selectedPlayer is Robot)
-									throw new Exception($"{selectedPlayer.Name} is a robot and cannot be changed.");
-								selectedPlayer.SetPlayerInformation(CreatePlayerInteractively());
-								break;
-							case 3:
-								selectedPlayer.DoTask();
-								Console.WriteLine("Press any key to continue");
-								Console.ReadLine();
-								break;
-							case 4:
-								Console.Clear();
-								goto START;
-							default:
-								throw new IndexOutOfRangeException();
-						}
+						break;
+					case 'w':
+						WritePlayerListToFile("Players.json");
+						break;
+					case 'r':
+						LoadPlayerListFromFile("Players.json");
+						break;
+					default:
+						selectedPlayer = players[(int)(choice - '0') - 1];
+						while(PlayerOptionsSubmenu(selectedPlayer));
+						break;
 					}
 				}
 				catch(NoInputException e)
@@ -142,10 +63,107 @@ START:
 					Console.Clear();
 					Console.WriteLine($"Error: {e}");
 					Console.Read();
-					Console.Clear();
 				}
 			}
 		} // public static void Main()
+
+		private static void GetInput<T>(string prompt, out T output)
+		{
+			Console.Write(prompt);
+
+			string? input = Console.ReadLine();
+			if (input == null || input.Length == 0)
+				throw new NoInputException("No input given by user");
+
+			output = (T)Convert.ChangeType(input, typeof(T));
+		}
+
+		private static void DisplayMainMenu()
+		{
+			Console.WriteLine("----------------------");
+			uint i=0;
+			foreach (var player in players)
+				Console.WriteLine($"{++i}. {player.Name}");
+			Console.WriteLine("----------------------");
+			Console.WriteLine("<n>. Add New Player");
+			Console.WriteLine("<w>. Save Player List");
+			Console.WriteLine("<r>. Load Player List");
+			Console.WriteLine("< >. Quit");
+			Console.WriteLine("----------------------");
+		}
+
+		private static void WritePlayerListToFile(string filepath)
+		{
+			var noBots = players
+				.Where(p => p is Player)
+				.Select(p => (Player)p)
+				.ToList();
+
+			PlayerSerializer.WriteList(noBots, filepath);
+		}
+
+		private static void LoadPlayerListFromFile(string filepath)
+		{
+			Hashtable playerById = new(
+				players
+				.Where(p => p is Player)
+				.ToDictionary(p => p.Id, p => (Player)p)
+			);
+
+			foreach (Player p in PlayerSerializer.ReadList(filepath))
+			{
+				if (playerById.Contains(p.Id))
+				{
+					Player overwritePlayer = (Player)playerById[p.Id];
+					overwritePlayer.Name = p.Name;
+					overwritePlayer.Email = p.Email;
+				}
+				else
+				{
+					players.Add(p);
+				}
+			}
+		}
+
+		private static bool PlayerOptionsSubmenu(PlayerModel selectedPlayer)
+		{
+			Console.Clear();
+			Console.WriteLine($"{selectedPlayer.Name} selected.");
+			Console.WriteLine("----------------------");
+			Console.WriteLine("1. Display information");
+			Console.WriteLine("2. Change name and email");
+			Console.WriteLine("3. Perform task");
+			Console.WriteLine("4. Return to player list");
+			Console.WriteLine("----------------------");
+
+			uint action;
+			GetInput<uint>("Select an action (number): ", out action);
+
+			switch(action)
+			{
+			case 1:
+				selectedPlayer.PrintInformation();
+				Console.WriteLine("Press any key to continue");
+				Console.Read();
+				break;
+			case 2:
+				if (selectedPlayer is Robot)
+					throw new Exception($"{selectedPlayer.Name} is a robot and cannot be changed.");
+				selectedPlayer.SetPlayerInformation(CreatePlayerInteractively());
+				break;
+			case 3:
+				selectedPlayer.DoTask();
+				Console.WriteLine("Press any key to continue");
+				Console.ReadLine();
+				break;
+			case 4:
+				return false;
+			default:
+				throw new IndexOutOfRangeException();
+			}
+
+			return true;
+		}
 
 		private static Player CreatePlayerInteractively()
 		{

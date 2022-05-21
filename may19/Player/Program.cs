@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using Program.Abstractions.Models;
 using Program.Implementations;
@@ -61,27 +62,32 @@ START:
 					}
 					else if (choice == players.Count+2)
 					{
-						var noBots = from item in players
-						             where item is Player
-						             select (Player)item;
+						var noBots = players
+							.Where(p => p is Player)
+							.Select(p => (Player)p)
+							.ToList();
 
-						PlayerSerializer.WriteList(new List<Player>(noBots), "Players.json");
+						PlayerSerializer.WriteList(noBots, "Players.json");
 						continue;
 					}
 					else if (choice == players.Count+3)
 					{
-						HashSet<Guid> guids = new(from player in players select player.Id);
-						foreach (Player player in PlayerSerializer.ReadList("Players.json"))
+						Hashtable playerById = new(
+							players
+							.Where(p => p is Player)
+							.ToDictionary(p => p.Id, p => (Player)p)
+						);
+						foreach (Player p in PlayerSerializer.ReadList("Players.json"))
 						{
-							if (guids.Contains(player.Id))
+							if (playerById.Contains(p.Id))
 							{
-								Player overwritePlayer = (Player)players.Find((p) => p.Id == player.Id);
-								overwritePlayer.Name = player.Name;
-								overwritePlayer.Email = player.Email;
+								Player overwritePlayer = (Player)playerById[p.Id];
+								overwritePlayer.Name = p.Name;
+								overwritePlayer.Email = p.Email;
 							}
 							else
 							{
-								players.Add(player);
+								players.Add(p);
 							}
 						}
 						continue;

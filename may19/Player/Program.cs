@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Program.Abstractions.Models;
 using Program.Implementations;
 using Program.Serialization;
-using Program.Exceptions;
 using static Program.Extensions.PlayerModelExtension;
 
 namespace Program
@@ -43,19 +42,14 @@ namespace Program
 					case "r":
 						LoadPlayerListFromFile("Players.json");
 						break;
-					case "":
-					case " ":
-						throw new NoInputException("No Input given");
+					case "q":
+						Console.WriteLine("Goodbye");
+						return;
 					default:
 						var selectedPlayer = players[Int32.Parse(choice) - 1];
 						while(PlayerOptionsSubmenu(selectedPlayer));
 						break;
 					}
-				}
-				catch(NoInputException e)
-				{
-					Console.WriteLine("Goodbye");
-					return;
 				}
 				catch(Exception e)
 				{
@@ -77,7 +71,7 @@ namespace Program
 			Console.WriteLine("<n>. New Player");
 			Console.WriteLine("<w>. Write Player List to disk");
 			Console.WriteLine("<r>. Read Player List from disk");
-			Console.WriteLine("< >. Quit");
+			Console.WriteLine("<q>. Quit");
 			Console.WriteLine("----------------------");
 		}
 

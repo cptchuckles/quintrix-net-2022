@@ -11,22 +11,22 @@ namespace Program
 {
 	public class Program
 	{
-		private static List<PlayerModel> players = new();
+		private static List<PlayerModel> _players = new();
 
 		public static void Main(string[] args)
 		{
-			players.Add(new Robot("Jim Grocerybuyer"));
-			players.Add(new Robot("Leeroy Chickenseller"));
-			players[0].Task = BuyGroceries;
-			players[1].Task = SellChickens;
+			_players.Add(new Robot("Jim Grocerybuyer"));
+			_players.Add(new Robot("Leeroy Chickenseller"));
+			_players[0].Task = BuyGroceries;
+			_players[1].Task = SellChickens;
 
-			while(true)
+			while (true)
 			{
 				try
 				{
 					if (! MainMenu()) return;
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					Console.Clear();
 					Console.WriteLine($"Error: {e}");
@@ -41,7 +41,7 @@ namespace Program
 
 			Console.WriteLine("----------- Players -----------");
 			uint i=0;
-			foreach (var player in players)
+			foreach (var player in _players)
 				Console.WriteLine($"{++i}. {player.Name}");
 			Console.WriteLine("----------- Actions -----------");
 			Console.WriteLine("<n>. New Player");
@@ -56,7 +56,7 @@ namespace Program
 			switch (choice)
 			{
 			case "n":
-				players.Add(CreatePlayerInteractively());
+				_players.Add(CreatePlayerInteractively());
 				break;
 			case "w":
 				WritePlayerListToFile("Players.json");
@@ -68,8 +68,8 @@ namespace Program
 				Console.WriteLine("Goodbye");
 				return false;
 			default:
-				var selectedPlayer = players[Int32.Parse(choice) - 1];
-				while(PlayerOptionsSubmenu(selectedPlayer));
+				var selectedPlayer = _players[Int32.Parse(choice) - 1];
+				while (PlayerOptionsSubmenu(selectedPlayer));
 				break;
 			}
 
@@ -78,7 +78,7 @@ namespace Program
 
 		private static void WritePlayerListToFile(string filepath)
 		{
-			var noBots = players
+			var noBots = _players
 				.Where(p => p is Player)
 				.Select(p => (Player)p)
 				.ToList();
@@ -89,7 +89,7 @@ namespace Program
 		private static void ReadPlayerListFromFile(string filepath)
 		{
 			Hashtable playerById = new(
-				players
+				_players
 				.Where(p => p is Player)
 				.ToDictionary(p => p.Id, p => (Player)p)
 			);
@@ -98,13 +98,13 @@ namespace Program
 			{
 				if (playerById.Contains(p.Id))
 				{
-					Player overwritePlayer = (Player)playerById[p.Id];
+					var overwritePlayer = (Player)playerById[p.Id];
 					overwritePlayer.Name = p.Name;
 					overwritePlayer.Email = p.Email;
 				}
 				else
 				{
-					players.Add(p);
+					_players.Add(p);
 				}
 			}
 		}
@@ -124,7 +124,7 @@ namespace Program
 			Console.Write("Select an action: ");
 			int action = Int32.Parse(Console.ReadLine());
 
-			switch(action)
+			switch (action)
 			{
 			case 1:
 				selectedPlayer.PrintInformation();

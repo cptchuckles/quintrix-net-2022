@@ -17,8 +17,8 @@ namespace Program
 		{
 			_players.Add(new Robot("Jim Grocerybuyer"));
 			_players.Add(new Robot("Leeroy Chickenseller"));
-			_players[0].Task = BuyGroceries;
-			_players[1].Task = SellChickens;
+			_players[0].Task = PlayerModelTasks.BuyGroceries;
+			_players[1].Task = PlayerModelTasks.SellChickens;
 
 			while (true)
 			{
@@ -56,7 +56,7 @@ namespace Program
 			switch (choice)
 			{
 			case "n":
-				_players.Add(CreatePlayerInteractively());
+				_players.Add(Player.CreateInteractively());
 				break;
 			case "w":
 				WritePlayerListToFile("Players.json");
@@ -134,7 +134,7 @@ namespace Program
 			case 2:
 				if (selectedPlayer is Robot)
 					throw new Exception($"{selectedPlayer.Name} is a robot and cannot be changed.");
-				selectedPlayer.SetPlayerInformation(CreatePlayerInteractively());
+				selectedPlayer.SetPlayerInformation(Player.CreateInteractively());
 				break;
 			case 3:
 				selectedPlayer.DoTask();
@@ -148,29 +148,6 @@ namespace Program
 			}
 
 			return true;
-		}
-
-		private static Player CreatePlayerInteractively()
-		{
-			Console.Write("Enter name: ");
-			string playerName = Console.ReadLine();
-			if (playerName == "") throw new Exception("No name entered");
-
-			Console.Write("Enter email: ");
-			string emailAddress = Console.ReadLine();
-			if (emailAddress == "") throw new Exception("No email entered");
-
-			return new Player(playerName, emailAddress);
-		}
-		
-		private static void BuyGroceries(PlayerModel who)
-		{
-			Console.WriteLine($"{who.Name} is going to buy groceries");
-		}
-		
-		private static void SellChickens(PlayerModel who)
-		{
-			Console.WriteLine($"{who.Name} is going to sell 27 chickens");
 		}
 	}
 }

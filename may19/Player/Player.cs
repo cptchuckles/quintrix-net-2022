@@ -26,6 +26,19 @@ namespace Program.Implementations
 			_id = id;
 		}
 
+		public static Player CreateInteractively()
+		{
+			Console.Write("Enter name: ");
+			string playerName = Console.ReadLine();
+			if (playerName == "") throw new Exception("No name entered");
+
+			Console.Write("Enter email: ");
+			string emailAddress = Console.ReadLine();
+			if (emailAddress == "") throw new Exception("No email entered");
+
+			return new Player(playerName, emailAddress);
+		}
+
 		private string _name;
 		public override string Name { get => _name; set => _name = value; }
 

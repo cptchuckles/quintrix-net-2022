@@ -18,14 +18,18 @@ public class Factorial
 		}
 
 		ulong product = RecursiveFactorial(arg);
-		Console.WriteLine($"1 = {product}");
+		Console.WriteLine($"{product}");
 
 		return 0;
 	}
 
 	private static ulong RecursiveFactorial(ulong n)
 	{
-		if (n<=1) return n;
+		if (n<=1)
+		{
+			Console.Write("1 = ");
+			return n;
+		}
 
 		Console.Write($"{n} * ");
 		return n * RecursiveFactorial(n - 1);

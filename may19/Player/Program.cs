@@ -22,34 +22,9 @@ namespace Program
 
 			while(true)
 			{
-				Console.Clear();
-
-				DisplayMainMenu();
-
 				try
 				{
-					Console.Write("Enter selection: ");
-					string choice = Console.ReadLine();
-
-					switch (choice)
-					{
-					case "n":
-						players.Add(CreatePlayerInteractively());
-						break;
-					case "w":
-						WritePlayerListToFile("Players.json");
-						break;
-					case "r":
-						LoadPlayerListFromFile("Players.json");
-						break;
-					case "q":
-						Console.WriteLine("Goodbye");
-						return;
-					default:
-						var selectedPlayer = players[Int32.Parse(choice) - 1];
-						while(PlayerOptionsSubmenu(selectedPlayer));
-						break;
-					}
+					if (! MainMenu()) return;
 				}
 				catch(Exception e)
 				{
@@ -58,21 +33,47 @@ namespace Program
 					Console.Read();
 				}
 			}
-		} // public static void Main()
+		}
 
-		private static void DisplayMainMenu()
+		private static bool MainMenu()
 		{
-			Console.WriteLine($"There are now {players.Count} players.");
-			Console.WriteLine("----------------------");
+			Console.Clear();
+
+			Console.WriteLine("----------- Players -----------");
 			uint i=0;
 			foreach (var player in players)
 				Console.WriteLine($"{++i}. {player.Name}");
-			Console.WriteLine("----------------------");
+			Console.WriteLine("----------- Actions -----------");
 			Console.WriteLine("<n>. New Player");
 			Console.WriteLine("<w>. Write Player List to disk");
 			Console.WriteLine("<r>. Read Player List from disk");
 			Console.WriteLine("<q>. Quit");
-			Console.WriteLine("----------------------");
+			Console.WriteLine("-------------------------------");
+
+			Console.Write("Select player or action: ");
+			string choice = Console.ReadLine();
+
+			switch (choice)
+			{
+			case "n":
+				players.Add(CreatePlayerInteractively());
+				break;
+			case "w":
+				WritePlayerListToFile("Players.json");
+				break;
+			case "r":
+				ReadPlayerListFromFile("Players.json");
+				break;
+			case "q":
+				Console.WriteLine("Goodbye");
+				return false;
+			default:
+				var selectedPlayer = players[Int32.Parse(choice) - 1];
+				while(PlayerOptionsSubmenu(selectedPlayer));
+				break;
+			}
+
+			return true;
 		}
 
 		private static void WritePlayerListToFile(string filepath)
@@ -85,7 +86,7 @@ namespace Program
 			PlayerSerializer.WriteList(noBots, filepath);
 		}
 
-		private static void LoadPlayerListFromFile(string filepath)
+		private static void ReadPlayerListFromFile(string filepath)
 		{
 			Hashtable playerById = new(
 				players
@@ -111,6 +112,7 @@ namespace Program
 		private static bool PlayerOptionsSubmenu(PlayerModel selectedPlayer)
 		{
 			Console.Clear();
+
 			Console.WriteLine($"{selectedPlayer.Name} selected.");
 			Console.WriteLine("----------------------");
 			Console.WriteLine("1. Display information");
@@ -119,7 +121,7 @@ namespace Program
 			Console.WriteLine("4. Return to player list");
 			Console.WriteLine("----------------------");
 
-			Console.Write("Select an action (number): ");
+			Console.Write("Select an action: ");
 			int action = Int32.Parse(Console.ReadLine());
 
 			switch(action)

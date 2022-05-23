@@ -144,7 +144,7 @@ namespace Program
 			case 2:
 				if (selectedPlayer is Robot)
 					throw new Exception($"{selectedPlayer.Name} is a robot and cannot be changed.");
-				selectedPlayer.SetPlayerInformation(Player.CreateInteractively());
+				selectedPlayer.CopyPlayerInformation(Player.CreateInteractively());
 				break;
 			case 3:
 				selectedPlayer.DoTask();

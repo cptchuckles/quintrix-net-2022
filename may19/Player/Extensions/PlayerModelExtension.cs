@@ -5,7 +5,7 @@ namespace Program.Extensions
 {
 	public static class PlayerModelExtension
 	{
-		public static void SetPlayerInformation(this PlayerModel who, PlayerModel newPlayer)
+		public static void CopyPlayerInformation(this PlayerModel who, PlayerModel newPlayer)
 		{
 			who.Name = newPlayer.Name;
 			who.Email = newPlayer.Email;

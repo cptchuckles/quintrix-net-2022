@@ -11,15 +11,25 @@ namespace Program
 {
 	public class Program
 	{
-		private static List<PlayerModel> _players = new();
+		private List<PlayerModel> _players = new();
 
-		public static void Main(string[] args)
+		public Program()
 		{
 			_players.Add(new Robot("Jim Grocerybuyer"));
 			_players.Add(new Robot("Leeroy Chickenseller"));
 			_players[0].Task = PlayerModelTasks.BuyGroceries;
 			_players[1].Task = PlayerModelTasks.SellChickens;
+		}
 
+		public static void Main(string[] args)
+		{
+			var program = new Program();
+
+			program.MainLoop();
+		}
+
+		public void MainLoop()
+		{
 			while (true)
 			{
 				try
@@ -35,7 +45,7 @@ namespace Program
 			}
 		}
 
-		private static bool MainMenu()
+		private bool MainMenu()
 		{
 			Console.Clear();
 
@@ -76,7 +86,7 @@ namespace Program
 			return true;
 		}
 
-		private static void WritePlayerListToFile(string filepath)
+		private void WritePlayerListToFile(string filepath)
 		{
 			var noBots = _players
 				.Where(p => p is Player)
@@ -86,7 +96,7 @@ namespace Program
 			PlayerSerializer.WriteList(noBots, filepath);
 		}
 
-		private static void ReadPlayerListFromFile(string filepath)
+		private void ReadPlayerListFromFile(string filepath)
 		{
 			Hashtable playerById = new(
 				_players
@@ -109,7 +119,7 @@ namespace Program
 			}
 		}
 
-		private static bool PlayerOptionsSubmenu(PlayerModel selectedPlayer)
+		private bool PlayerOptionsSubmenu(PlayerModel selectedPlayer)
 		{
 			Console.Clear();
 

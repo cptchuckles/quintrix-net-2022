@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-using PlayerModel;
+using QuintrixMVC.Models;
 
 namespace QuintrixMVC.Data;
 

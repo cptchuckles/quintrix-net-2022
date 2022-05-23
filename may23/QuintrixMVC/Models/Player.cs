@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 using System.ComponentModel.DataAnnotations;
 
-namespace PlayerModel
+namespace QuintrixMVC.Models
 {
 	public class Player
 	{

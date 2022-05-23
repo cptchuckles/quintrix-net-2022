@@ -3,7 +3,7 @@ using Program.Abstractions.Models;
 
 namespace Program
 {
-	public class PlayerModelTasks
+	public static class PlayerModelTasks
 	{
 		public static void BuyGroceries(PlayerModel who)
 		{

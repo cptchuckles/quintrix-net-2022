@@ -12,6 +12,16 @@ namespace Program.Implementations
 				RegexOptions.Compiled
 				);
 
+		private string _name;
+		public override string Name { get => _name; set => _name = value; }
+
+		private string _email;
+		public override string Email
+		{
+			get => _email;
+			set => _email = ValidateEmail(value);
+		}
+
 		public Player(string name, string email)
 		{
 			Name = name;
@@ -37,16 +47,6 @@ namespace Program.Implementations
 			if (emailAddress == "") throw new Exception("No email entered");
 
 			return new Player(playerName, emailAddress);
-		}
-
-		private string _name;
-		public override string Name { get => _name; set => _name = value; }
-
-		private string _email;
-		public override string Email
-		{
-			get => _email;
-			set => _email = ValidateEmail(value);
 		}
 
 		private static string ValidateEmail(string input)

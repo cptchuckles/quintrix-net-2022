@@ -5,13 +5,6 @@ namespace Program.Implementations
 {
 	public sealed class Robot : PlayerModel
 	{
-		public Robot(string name)
-		{
-			string digits = Id.ToString().Split('-')[0];
-			_name = $"{name.Replace(' ', '-')}-{digits}";
-			_email = $"{name.Split(' ')[0]}{digits}@sharklazers.com";
-		}
-
 		private string _name;
 		public override string Name
 		{
@@ -24,6 +17,13 @@ namespace Program.Implementations
 		{
 			get => _email;
 			set { throw new Exception("Cannot modify Robot.Email"); }
+		}
+
+		public Robot(string name)
+		{
+			string digits = Id.ToString().Split('-')[0];
+			_name = $"{name.Replace(' ', '-')}-{digits}";
+			_email = $"{name.Split(' ')[0]}{digits}@sharklazers.com";
 		}
 	}
 }

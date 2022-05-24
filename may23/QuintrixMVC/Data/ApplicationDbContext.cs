@@ -12,6 +12,6 @@ public class ApplicationDbContext : IdentityDbContext
     {
     }
 
-    DbSet<Player> Players { get; set; }
+    public DbSet<Player> Players { get; set; }
 
 }

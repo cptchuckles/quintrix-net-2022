@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
-using QuintrixMVC.Models;
 
 namespace QuintrixMVC.Data;
 
@@ -12,6 +10,8 @@ public class ApplicationDbContext : IdentityDbContext
     {
     }
 
-    public DbSet<Player> Players { get; set; }
+    public DbSet<QuintrixMVC.Models.Player>? Players { get; set; }
+
+    public DbSet<QuintrixMVC.Models.Robot>? Robot { get; set; }
 
 }

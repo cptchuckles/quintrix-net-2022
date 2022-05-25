@@ -1,18 +1,16 @@
 using System;
 using System.Text.RegularExpressions;
-
-using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace QuintrixMVC.Models
 {
-    public class Player
+    public class Player : IdentityUser
     {
         private static Regex _validEmailPattern = new Regex(
                 @"^[a-zA-Z]\w*@(\w+\.)+\w+$",
                 RegexOptions.Compiled
                 );
 
-        [Key]
         public Guid Id { get; set; }
 
         private string _name;

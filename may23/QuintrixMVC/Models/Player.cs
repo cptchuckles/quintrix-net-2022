@@ -25,6 +25,8 @@ namespace QuintrixMVC.Models
             set => _email = ValidateEmail(value);
         }
 
+        public uint BodyCount { get; set; }
+
         public Player() {}
 
         private static string ValidateEmail(string input)

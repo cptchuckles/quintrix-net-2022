@@ -14,4 +14,6 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<QuintrixMVC.Models.User>? User { get; set; }
 
     public DbSet<QuintrixMVC.Models.PiddlyThing>? PiddlyThing { get; set; }
+
+    public DbSet<QuintrixMVC.Models.ValuableThing>? ValuableThing { get; set; }
 }

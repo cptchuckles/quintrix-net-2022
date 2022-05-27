@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuintrixMVC.Data;
@@ -46,6 +47,7 @@ namespace QuintrixMVC.Controllers
         }
 
         // GET: ValuableThing/Create
+        [Authorize(Roles = "Gigachad")]
         public IActionResult Create()
         {
             return View();
@@ -56,6 +58,7 @@ namespace QuintrixMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Gigachad")]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Value")] ValuableThing valuableThing)
         {
             if (ModelState.IsValid)
@@ -69,6 +72,7 @@ namespace QuintrixMVC.Controllers
         }
 
         // GET: ValuableThing/Edit/5
+        [Authorize(Roles = "Gigachad")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null || _context.ValuableThing == null)
@@ -89,6 +93,7 @@ namespace QuintrixMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Gigachad")]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Description,Value")] ValuableThing valuableThing)
         {
             if (id != valuableThing.Id)
@@ -120,6 +125,7 @@ namespace QuintrixMVC.Controllers
         }
 
         // GET: ValuableThing/Delete/5
+        [Authorize(Roles = "Gigachad")]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null || _context.ValuableThing == null)
@@ -140,6 +146,7 @@ namespace QuintrixMVC.Controllers
         // POST: ValuableThing/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Gigachad")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             if (_context.ValuableThing == null)

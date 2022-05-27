@@ -11,6 +11,7 @@ using QuintrixMVC.Models;
 
 namespace QuintrixMVC.Controllers
 {
+    [Authorize]
     public class ValuableThingController : Controller
     {
         private readonly ApplicationDbContext _context;

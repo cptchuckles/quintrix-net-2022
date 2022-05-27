@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuintrixMVC.Data;
@@ -46,6 +47,7 @@ namespace QuintrixMVC
         }
 
         // GET: PiddlyThing/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View(new PiddlyThing());
@@ -56,6 +58,7 @@ namespace QuintrixMVC
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Id,Name,Description")] PiddlyThing piddlyThing)
         {
             if (ModelState.IsValid)
@@ -69,6 +72,7 @@ namespace QuintrixMVC
         }
 
         // GET: PiddlyThing/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null || _context.PiddlyThing == null)
@@ -89,6 +93,7 @@ namespace QuintrixMVC
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Description")] PiddlyThing piddlyThing)
         {
             if (id != piddlyThing.Id)
@@ -120,6 +125,7 @@ namespace QuintrixMVC
         }
 
         // GET: PiddlyThing/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null || _context.PiddlyThing == null)
@@ -138,6 +144,7 @@ namespace QuintrixMVC
         }
 
         // POST: PiddlyThing/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

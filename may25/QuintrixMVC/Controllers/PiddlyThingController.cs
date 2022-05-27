@@ -48,9 +48,7 @@ namespace QuintrixMVC
         // GET: PiddlyThing/Create
         public IActionResult Create()
         {
-            var piddlyThing = new PiddlyThing();
-            ViewData["Description"] = piddlyThing.Description;
-            return View();
+            return View(new PiddlyThing());
         }
 
         // POST: PiddlyThing/Create

@@ -3,13 +3,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace QuintrixMVC.Models;
 
-public class PiddlyThing : IThing
+sealed public class PiddlyThing : IThing
 {
     [Key]
     public Guid Id { get; set; }
     public string Name { get; set; }
 
-    public string Description { get; set; } = "A piddly thing of no value whatsoever.";
+    private string _description = "A piddly thing of no value whatsoever.";
+    public string Description { get => _description; set {} }
 
     public PiddlyThing()
     {

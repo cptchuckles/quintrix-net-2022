@@ -1,0 +1,70 @@
+@using Microsoft.AspNetCore.Identity
+@inject RoleManager<IdentityRole> RoleManager
+@model QuintrixMVC.Controllers.RoleDetails
+@{
+    ViewData["Title"] = "Details";
+    ViewData["RoleName"] = RoleManager.Roles.Where(r => r.Id == Model.Id).First()!.Name;
+}
+
+<h1>@ViewData["RoleName"]</h1>
+
+<hr />
+
+<form asp-action="Update" asp-route-id="@Model.Id" method="post">
+    <input hidden name="RoleId" value="@Model.Id" />
+
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Remove active users</h4>
+        </div>
+@if (Model.UsersInRole?.Count() > 0)
+{
+        <ul class="card-body list-group list-group-flush">
+    @foreach (var user in Model.UsersInRole)
+    {
+            <li class="list-group-item">
+                <label class="btn active">
+                    <input type="checkbox" name="RejectionIds" value="@user.Id" autocomplete="off">
+                    @user.UserName
+                </label>
+            </li>
+    }
+        </ul>
+}
+else
+{
+    <p>THERE'S NOBODY IN HERE WTF</p>
+}
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Add new users</h4>
+        </div>
+@if (Model.UsersNotInRole?.Count() > 0)
+{
+        <ul class="card-body list-group list-group-flush">
+    @foreach (var user in Model.UsersNotInRole)
+    {
+            <li class="list-group-item">
+                <label class="btn active">
+                    <input type="checkbox" name="InvitationIds" value="@user.Id" autocomplete="off">
+                    @user.UserName
+                </label>
+            </li>
+    }
+        </ul>
+}
+else
+{
+    <p>THERE ARE NO MORE IDIOTS</p>
+}
+    </div>
+
+    <hr />
+
+    <div class="btn-group">
+        <button type="submit" class="btn btn-primary">Update Members</button>
+        <a class="btn btn-secondary" asp-action="Index" role="button">Back to list</a>
+    </div>
+
+</form>

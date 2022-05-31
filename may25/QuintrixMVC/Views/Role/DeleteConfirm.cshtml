@@ -1,0 +1,14 @@
+@model Microsoft.AspNetCore.Identity.IdentityRole
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<form asp-action="Delete" method="post" class="card">
+    <div class="card-header"><h2>@Model.Name</h2></div>
+    <div class="card-body">
+        <h5 class="card-title">Are you sure you want to delete this role?</h5>
+        <input hidden name="roleId" value="@Model.Id" />
+        <a class="btn btn-primary" asp-action="Index" role="button">Take me back!</a>
+        <button type="submit" class="btn btn-danger">DELET</button>
+    </div>
+</form>

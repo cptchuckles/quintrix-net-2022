@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using QuintrixMVC.Models;
 
 namespace QuintrixMVC.Controllers
 {
+    [Authorize(Roles = "Gigachad")]
     public class RoleController : Controller
     {
         private RoleManager<IdentityRole> _roleManager;
@@ -95,10 +97,22 @@ namespace QuintrixMVC.Controllers
             return View(name);
         }
 
-        // GET: Role/Delete/id
-        public async Task<IActionResult> Delete(string? id)
+        // GET: Role/Delete/Id
+        public async Task<IActionResult> DeleteConfirm(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                ModelState.AddModelError("", $"Could not find Role with Id {id}");
+            }
+            return View(role);
+        }
+
+        // POST: Role/Delete
+        [HttpPost]
+        public async Task<IActionResult> Delete([Required] string roleId)
+        {
+            var role = await _roleManager.FindByIdAsync(roleId);
             if (role != null)
             {
                 var result = await _roleManager.DeleteAsync(role);

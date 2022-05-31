@@ -24,7 +24,7 @@
             <td scope="row">@role.Name</td>
             <td>
                 <a name="delete" id="delete" class="btn btn-primary" asp-action="Details" asp-route-id="@role.Id" role="button">View Members</a>
-                <a name="delete" id="delete" class="btn btn-danger" asp-action="Delete" asp-route-id="@role.Id" role="button">Delete</a>
+                <a name="delete" id="delete" class="btn btn-danger" asp-action="DeleteConfirm" asp-route-id="@role.Id" role="button">Delete</a>
             </td>
         </tr>
         }

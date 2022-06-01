@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using JwtApi.Models;
 using JwtApi.Data;
@@ -25,7 +26,7 @@ namespace JwtApi.Controllers
         }
 
         [HttpPost("register")]
-        public ActionResult<string> Register(UserDto request)
+        public ActionResult<string> Register([FromBody] UserDto request)
         {
             var user = new User();
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -36,25 +37,28 @@ namespace JwtApi.Controllers
 
             using (var context = new ApplicationDbContext())
             {
-                context.Add(user);
+                context.Add<User>(user);
                 context.SaveChanges();
             }
 
-            return Ok("User created");
+            var createdResult = new ObjectResult($"User created: {request.Username}");
+            createdResult.StatusCode = 201;
+            return createdResult;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
-        public ActionResult<string> Login(UserDto request)
+        public ActionResult<string> Login([FromBody] UserDto request)
         {
             using (var context = new ApplicationDbContext())
             {
                 var user = context.Users.Where(u => u.Username == request.Username).FirstOrDefault();
 
                 if (user is null || user.Username != request.Username)
-                    return BadRequest("User not found");
+                    return NotFound("User not found");
                 
                 if (! VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
-                    return BadRequest("Invalid password");
+                    return Unauthorized("Invalid password");
 
                 var token = CreateToken(user);
                 return Ok(token);

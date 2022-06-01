@@ -18,12 +18,10 @@ namespace JwtApi.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly ApplicationDbContext _context;
 
-        public AuthController(IConfiguration configuration, ApplicationDbContext context)
+        public AuthController(IConfiguration configuration)
         {
             _configuration = configuration;
-            _context = context;
         }
 
         [HttpPost("register")]
@@ -36,8 +34,11 @@ namespace JwtApi.Controllers
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            _context.Add(user);
-            _context.SaveChanges();
+            using (var context = new ApplicationDbContext())
+            {
+                context.Add(user);
+                context.SaveChanges();
+            }
 
             return Ok("User created");
         }
@@ -45,16 +46,19 @@ namespace JwtApi.Controllers
         [HttpPost("login")]
         public ActionResult<string> Login(UserDto request)
         {
-            var user = _context.Users.Where(u => u.Username == request.Username).FirstOrDefault();
+            using (var context = new ApplicationDbContext())
+            {
+                var user = context.Users.Where(u => u.Username == request.Username).FirstOrDefault();
 
-            if (user is null || user.Username != request.Username)
-                return BadRequest("User not found");
-            
-            if (! VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
-                return BadRequest("Invalid password");
+                if (user is null || user.Username != request.Username)
+                    return BadRequest("User not found");
+                
+                if (! VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+                    return BadRequest("Invalid password");
 
-            var token = CreateToken(user);
-            return Ok(token);
+                var token = CreateToken(user);
+                return Ok(token);
+            }
         }
 
         private string CreateToken(User user)

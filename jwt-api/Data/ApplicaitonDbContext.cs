@@ -8,8 +8,18 @@ namespace JwtApi.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public ApplicationDbContext()
         {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+            
+            options.UseSqlite(config.GetConnectionString("DefaultConnection") ??
+                throw new KeyNotFoundException("Could not retrieve DefaultConnection from configuration."));
         }
 
         public DbSet<JwtApi.Models.User> Users { get; set; }

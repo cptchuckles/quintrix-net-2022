@@ -11,10 +11,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
 
-// Add EntityFrameworkCore database stuffs
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-    throw new KeyNotFoundException("Could not retrieve DefaultConnection from configuration.");
-builder.Services.AddDbContext<JwtApi.Data.ApplicationDbContext>(options => options.UseSqlite(connectionString));
+builder.Services.AddDbContext<JwtApi.Data.ApplicationDbContext>();
 
 var app = builder.Build();
 

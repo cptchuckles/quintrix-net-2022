@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,7 +56,7 @@ namespace JwtApi.Controllers
             };
 
             var key = new SymmetricSecurityKey(
-                System.Text.Encoding.UTF8.GetBytes(
+                Encoding.UTF8.GetBytes(
                     _configuration.GetSection("AppSettings:Token").Value));
 
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
@@ -75,7 +76,7 @@ namespace JwtApi.Controllers
             using (var hmac = new HMACSHA512())
             {
                 passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
 
@@ -83,7 +84,7 @@ namespace JwtApi.Controllers
         {
             using (var hmac = new HMACSHA512(passwordSalt))
             {
-                var computeHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                var computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
                 return computeHash.SequenceEqual(passwordHash);
             }
         }

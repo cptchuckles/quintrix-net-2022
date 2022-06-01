@@ -10,36 +10,44 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using JwtApi.Models;
+using JwtApi.Data;
 
 namespace JwtApi.Controllers
 {
     [ApiController]
     public class AuthController : ControllerBase
     {
-        public static User user = new User();
         private readonly IConfiguration _configuration;
+        private readonly ApplicationDbContext _context;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(IConfiguration configuration, ApplicationDbContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserDto request)
+        public ActionResult<string> Register(UserDto request)
         {
+            var user = new User();
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             user.Username = request.Username;
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            return Ok(user);
+            _context.Add(user);
+            _context.SaveChanges();
+
+            return Ok("User created");
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDto request)
+        public ActionResult<string> Login(UserDto request)
         {
-            if (user.Username != request.Username)
+            var user = _context.Users.Where(u => u.Username == request.Username).FirstOrDefault();
+
+            if (user is null || user.Username != request.Username)
                 return BadRequest("User not found");
             
             if (! VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))

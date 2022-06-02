@@ -28,16 +28,14 @@ namespace JwtApi.Controllers
         [HttpPost("register")]
         public ActionResult<string> Register([FromBody] UserDto request)
         {
-            var user = new User();
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            user.Username = request.Username;
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-
             using (var context = new ApplicationDbContext())
             {
-                context.Add<User>(user);
+                if (context.Users.Any(u => u.Username == request.Username))
+                    return BadRequest($"Username {request.Username} already exists");
+
+                CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                context.Add<User>(new User(request.Username, passwordHash, passwordSalt));
                 context.SaveChanges();
             }
 

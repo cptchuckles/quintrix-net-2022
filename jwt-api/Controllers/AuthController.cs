@@ -74,7 +74,7 @@ namespace JwtApi.Controllers
                 Encoding.UTF8.GetBytes(
                     _configuration.GetSection("Jwt:Key").Value));
 
-            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
             var token = new JwtSecurityToken(
                 claims: claims,

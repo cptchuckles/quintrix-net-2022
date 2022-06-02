@@ -16,6 +16,7 @@ using JwtApi.Data;
 namespace JwtApi.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
@@ -25,7 +26,7 @@ namespace JwtApi.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost("register")]
+        [HttpPost("Register")]
         public ActionResult<string> Register([FromBody] UserDto request)
         {
             using (var context = new ApplicationDbContext())
@@ -45,7 +46,7 @@ namespace JwtApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public ActionResult<string> Login([FromBody] UserDto request)
         {
             using (var context = new ApplicationDbContext())
@@ -53,10 +54,10 @@ namespace JwtApi.Controllers
                 var user = context.Users.Where(u => u.Username == request.Username).FirstOrDefault();
 
                 if (user is null || user.Username != request.Username)
-                    return NotFound("User not found");
+                    return BadRequest("Username or password incorrect");
                 
                 if (! VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
-                    return Unauthorized("Invalid password");
+                    return BadRequest("Username or password incorrect");
 
                 var token = CreateToken(user);
                 return Ok(token);

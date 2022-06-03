@@ -51,9 +51,10 @@ namespace JwtApi.Controllers
         {
             using (var context = new ApplicationDbContext())
             {
-                var user = context.Users.Where(u => u.Username == request.Username).FirstOrDefault();
+                var user = context.Users.FirstOrDefault(
+                    u => u.Username.ToLower() == request.Username.ToLower());
 
-                if (user is null || user.Username != request.Username)
+                if (user is null)
                     return BadRequest("Username or password incorrect");
                 
                 if (! VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
@@ -67,7 +68,8 @@ namespace JwtApi.Controllers
         private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim>{
-                new Claim(ClaimTypes.Name, user.Username)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             var key = new SymmetricSecurityKey(
@@ -77,6 +79,8 @@ namespace JwtApi.Controllers
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
             var token = new JwtSecurityToken(
+                issuer: _configuration.GetSection("Jwt:Issuer").Value,
+                audience: _configuration.GetSection("Jwt:Audience").Value,
                 claims: claims,
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: cred);

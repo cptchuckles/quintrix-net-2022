@@ -8,12 +8,13 @@ namespace JwtApi.Models
 {
     public class User
     {
-        public User(string username, byte[] passwordHash, byte[] passwordSalt)
+        public User(string username, byte[] passwordHash, byte[] passwordSalt, string role = "User")
         {
             Id = Guid.NewGuid();
             Username = username;
             PasswordHash = passwordHash;
             PasswordSalt = passwordSalt;
+            Role = role;
         }
 
         [Key]
@@ -21,5 +22,6 @@ namespace JwtApi.Models
         public string Username { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+        public string Role { get; set; } = "User";
     }
 }

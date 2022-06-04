@@ -16,7 +16,7 @@ using JwtApi.Data;
 namespace JwtApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;

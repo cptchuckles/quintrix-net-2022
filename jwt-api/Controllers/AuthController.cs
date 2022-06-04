@@ -31,7 +31,7 @@ namespace JwtApi.Controllers
         {
             using (var context = new ApplicationDbContext())
             {
-                if (context.Users.Any(u => u.Username == request.Username))
+                if (context.Users!.Any(u => u.Username == request.Username))
                     return BadRequest($"Username {request.Username} already exists");
 
                 CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -51,7 +51,7 @@ namespace JwtApi.Controllers
         {
             using (var context = new ApplicationDbContext())
             {
-                var user = context.Users.FirstOrDefault(
+                var user = context.Users!.FirstOrDefault(
                     u => u.Username.ToLower() == request.Username.ToLower());
 
                 if (user is null)

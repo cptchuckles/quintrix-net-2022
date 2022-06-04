@@ -33,6 +33,6 @@ namespace JwtApi.Data
                 throw new KeyNotFoundException($"Could not retrieve {connectionName} from configuration."));
         }
 
-        public DbSet<JwtApi.Models.User> Users { get; set; }
+        public DbSet<JwtApi.Models.User>? Users { get; set; }
     }
 }

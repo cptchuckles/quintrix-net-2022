@@ -27,7 +27,7 @@ namespace JwtApi.Controllers
         }
 
         [HttpPost("Register")]
-        public ActionResult<string> Register([FromBody] UserDto request)
+        public ActionResult<string> Register([FromBody] RegisterUserDto request)
         {
             using (var context = new ApplicationDbContext())
             {
@@ -47,7 +47,7 @@ namespace JwtApi.Controllers
 
         [AllowAnonymous]
         [HttpPost("Login")]
-        public ActionResult<string> Login([FromBody] UserDto request)
+        public ActionResult<string> Login([FromBody] LoginUserDto request)
         {
             using (var context = new ApplicationDbContext())
             {

@@ -7,7 +7,13 @@ using JwtApi.Attributes;
 
 namespace JwtApi.Models
 {
-    public class UserDto
+    internal interface IUserDto
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class RegisterUserDto : IUserDto
     {
         [Required]
         [MinLength(5)]
@@ -16,6 +22,14 @@ namespace JwtApi.Models
         [Required]
         [MinLength(16)]
         [StrongPassword]
+        public string Password { get; set; } = "";
+    }
+
+    public class LoginUserDto : IUserDto
+    {
+        [Required]
+        public string Username { get; set; } = "";
+        [Required]
         public string Password { get; set; } = "";
     }
 }

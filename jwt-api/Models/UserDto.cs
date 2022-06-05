@@ -17,6 +17,7 @@ namespace JwtApi.Models
     {
         [Required]
         [MinLength(5)]
+        [NoWhitespace]
         public string Username { get; set; } = "";
 
         [Required]

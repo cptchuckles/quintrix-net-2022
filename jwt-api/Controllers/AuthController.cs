@@ -26,12 +26,13 @@ namespace JwtApi.Controllers
             _configuration = configuration;
         }
 
+        [AllowAnonymous]
         [HttpPost("Register")]
         public ActionResult<string> Register([FromBody] RegisterUserDto request)
         {
             using (var context = new ApplicationDbContext())
             {
-                if (context.Users!.Any(u => u.Username == request.Username))
+                if (context.Users!.Any(u => u.Username.ToLower() == request.Username.ToLower()))
                     return BadRequest($"Username {request.Username} already exists");
 
                 CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -67,14 +68,12 @@ namespace JwtApi.Controllers
 
         private string CreateToken(User user)
         {
-            List<Claim> claims = new List<Claim>{
+            var claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(
-                    _configuration.GetSection("Jwt:Key").Value));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Key").Value));
 
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
@@ -82,7 +81,7 @@ namespace JwtApi.Controllers
                 issuer: _configuration.GetSection("Jwt:Issuer").Value,
                 audience: _configuration.GetSection("Jwt:Audience").Value,
                 claims: claims,
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.Now.AddHours(1),
                 signingCredentials: cred);
             
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);

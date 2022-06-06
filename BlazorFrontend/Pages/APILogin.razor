@@ -1,0 +1,62 @@
+@page "/login"
+@using System.Threading.Tasks
+@inject HttpClient Http
+@inject AuthenticationStateProvider AuthStateProvider
+
+<PageTitle>JWT Api Interactor thing</PageTitle>
+
+@if (token is not null)
+{
+    <h3>Token:</h3>
+    <pre><textarea style="width: 100%; min-height: fit-content;" @bind="token" disabled></textarea></pre>
+}
+@if (errors)
+{
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <strong>Holy guacamole!</strong> You should make sure you're not mentally retarded.
+    </div>
+}
+
+<div>
+    <div class="form-group">
+        <label asp-for="username"></label>
+        <input type="text" @bind="userName" placeholder="Username" asp-for="userName" class="form-control" />
+        <span asp-validation-for="userName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="password"></label>
+        <input type="password" @bind="passWord" placeholder="Password" asp-for="password" class="form-control" />
+        <span asp-validation-for="password" class="text-danger"></span>
+    </div>
+    <button @onclick="TryLogin" class="btn btn-primary">Login</button>
+</div>
+
+@code {
+    private string? token;
+    private string userName;
+    private string passWord;
+    private bool errors = false;
+
+    private async Task TryLogin()
+    {
+        var result = await Http.PostAsJsonAsync(
+            "https://localhost:7195/api/login",
+            new Dictionary<string,string> { ["Username"] = userName,
+                                            ["Password"] = passWord });
+
+        if (! result.IsSuccessStatusCode)
+        {
+            errors = true;
+            return;
+        }
+        errors = false;
+        var gettoken = await result.Content.ReadAsStringAsync();
+        token = gettoken;
+
+        if (AuthStateProvider is AppAuthStateProvider appAuthProvider)
+        {
+            appAuthProvider.token = token;
+            await appAuthProvider.GetAuthenticationStateAsync();
+        }
+    }
+}

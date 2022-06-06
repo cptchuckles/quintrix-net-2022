@@ -9,11 +9,15 @@ namespace BlazorFrontend
 {
     public class AppAuthStateProvider : AuthenticationStateProvider
     {
+        public string? token;
+
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiWWluZ3VzIERpbmd1cyIsImV4cCI6MTY1NDI5NTM1OX0.KdxfdLGOsmcxCs_ms-YIEElI0hiBkG5if-Choiv12zS1fUZicX4RBEL3F8TC5Lab4EtQa3r5jGy5FN49VRqKng";
-
-            var identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+            ClaimsIdentity identity;
+            if (token is null)
+                identity = new ClaimsIdentity();
+            else
+                identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
 
             var user = new ClaimsPrincipal(identity);
             var state = new AuthenticationState(user);

@@ -5,31 +5,52 @@
 
 <PageTitle>JWT Api Interactor thing</PageTitle>
 
-@if (token is not null)
-{
-    <h3>Token:</h3>
-    <pre><textarea style="width: 100%; min-height: fit-content;" @bind="token" disabled></textarea></pre>
-}
-@if (errors)
-{
-    <div class="alert alert-primary alert-dismissible fade show" role="alert">
-        <strong>Holy guacamole!</strong> You should make sure you're not mentally retarded.
-    </div>
-}
+<AuthorizeView>
+    <NotAuthorized>
+        <div class="card m-auto mb-3" style="max-width: 600px;">
+            <div class="card-header mb-2">
+                <h3 class="card-title pt-1 pd-0">Authenticate</h3>
+            </div>
+            <div class="card-body p-3">
+                <div class="input-group row g-0 mb-3">
+                    <label class="input-group-text col col-auto" for="username" id="usernamelabel">Username</label>
+                    <input type="text" @bind="userName" id="username" aria-describedby="usernamelabel" class="form-control col" />
+                </div>
+                <div class="input-group row g-0 mb-3">
+                    <label class="input-group-text col col-auto align-right" for="password" id="passwordlabel">Password</label>
+                    <input type="password" onkeyup="@KeyUp" @bind="passWord" id="password" aria-describedby="passwordlabel" class="form-control" />
+                    @functions {
+                        async Task KeyUp(KeyboardEventArgs e)
+                        {
+                            if (e.Key == "Enter")
+                            {
+                                await TryLogin();
+                            }
+                        }
+                    }
+                </div>
+                <div class="d-flex flex-row justify-content-between flex-wrap g-0">
+                    <button @onclick="TryLogin" class="btn btn-primary">Login</button>
+                    <a href="#" onClick="javascript:alert('You fuckin fool!');">Create an account</a>
+                </div>
+            </div>
+        </div>
 
-<div>
-    <div class="form-group">
-        <label asp-for="username"></label>
-        <input type="text" @bind="userName" placeholder="Username" asp-for="userName" class="form-control" />
-        <span asp-validation-for="userName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="password"></label>
-        <input type="password" @bind="passWord" placeholder="Password" asp-for="password" class="form-control" />
-        <span asp-validation-for="password" class="text-danger"></span>
-    </div>
-    <button @onclick="TryLogin" class="btn btn-primary">Login</button>
-</div>
+        @if (errors)
+        {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Holy guacamole!</strong> You should make sure you're not mentally retarded.
+        </div>
+        }
+    </NotAuthorized>
+    <Authorized>
+        <div class="alert alert-primary alert-dismissable fade show">
+            <h3>Token:</h3>
+            <span class="m-0 font-monospace fs-6" style="word-break: break-all;">@token</span>
+        </div>
+        <a href="/">Continue to homepage</a>
+    </Authorized>
+</AuthorizeView>
 
 @code {
     private string? token;

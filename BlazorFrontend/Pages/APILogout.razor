@@ -9,13 +9,13 @@
 
 <p><a id="stay" href="/" class="btn btn-success btn-lg btn-block">No, I want to stay forever!</a></p>
 
-<p><a id="leave" href="#" @onclick="Logout" class="btn btn-danger btn-lg btn-block">Yes, I am leaving you, you piece of garbage</a></p>
+<p><button id="leave" @onclick="Logout" class="btn btn-danger btn-lg btn-block">Yes, I am leaving you, you piece of garbage</button></p>
 
 @code {
     public async void Logout()
     {
         ((AppAuthStateProvider)AuthStateProvider).token = null!;
         await ((AppAuthStateProvider)AuthStateProvider).GetAuthenticationStateAsync();
-        NavManager.NavigateTo("/");
+        NavManager.NavigateTo("/login");
     }
 }

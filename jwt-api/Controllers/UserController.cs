@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using JwtApi.Data;
 using JwtApi.Models;
@@ -25,8 +26,16 @@ namespace JwtApi.Controllers
         public IActionResult WhoAmI()
         {
             var currentUser = GetCurrentUser();
+            if (currentUser is null) return new StatusCodeResult(500);
 
-            return Ok($"You are {currentUser.Username} and your role is {currentUser.Role}");
+            var response = new Dictionary<string,string>() {
+                ["Id"] = currentUser.Id.ToString(),
+                ["Username"] = currentUser.Username,
+                ["Role"] = currentUser.Role
+            };
+
+            Response.ContentType = "application/json";
+            return Ok(JsonSerializer.Serialize(response));
         }
 
         [Authorize(Roles = "Admin,Gigachad")]
@@ -35,7 +44,17 @@ namespace JwtApi.Controllers
         {
             using (var context = new ApplicationDbContext())
             {
-                return Ok(string.Join("\n", context.Users!.Select(u => $"{u.Username}\t{u.Role}").ToList()));
+                var list =
+                    context.Users?
+                    .AsEnumerable()
+                    .Select(u => new Dictionary<string,string>() {
+                        ["Id"]=u.Id.ToString(),
+                        ["Username"]=u.Username,
+                        ["Role"]=u.Role })
+                    .ToList();
+                
+                Response.ContentType = "application/json";
+                return Ok(JsonSerializer.Serialize(list));
             }
         }
 
@@ -69,17 +88,18 @@ namespace JwtApi.Controllers
             }
         }
 
-        private User GetCurrentUser()
+        private User? GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 
             if (identity is not null)
             {
                 var claims = identity.Claims;
-                return new User() {
-                    Username = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value!,
-                    Role = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value!
-                };
+                var username = claims.FirstOrDefault(e => e.Type == ClaimTypes.Name)?.Value;
+                using (var context = new ApplicationDbContext())
+                {
+                    return context.Users?.FirstOrDefault(u => u.Username == username);
+                }
             }
 
             return null!;

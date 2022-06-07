@@ -2,6 +2,10 @@
 @attribute [Authorize]
 
 <PageTitle>Counter</PageTitle>
+@if (currentCount >= 100)
+{
+    <CounterAward />
+}
 
 <h1>Counter</h1>
 

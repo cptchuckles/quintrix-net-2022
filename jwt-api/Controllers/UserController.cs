@@ -23,6 +23,7 @@ namespace JwtApi.Controllers
 
         [Authorize]
         [HttpGet("Whoami")]
+        [Produces("application/json")]
         public IActionResult WhoAmI()
         {
             var currentUser = GetCurrentUser();
@@ -34,12 +35,12 @@ namespace JwtApi.Controllers
                 ["Role"] = currentUser.Role
             };
 
-            Response.ContentType = "application/json";
-            return Ok(JsonSerializer.Serialize(response));
+            return Ok(response);
         }
 
         [Authorize(Roles = "Admin,Gigachad")]
         [HttpGet("List")]
+        [Produces("application/json")]
         public IActionResult List()
         {
             using (var context = new ApplicationDbContext())
@@ -53,8 +54,7 @@ namespace JwtApi.Controllers
                         ["Role"]=u.Role })
                     .ToList();
                 
-                Response.ContentType = "application/json";
-                return Ok(JsonSerializer.Serialize(list));
+                return Ok(list);
             }
         }
 
